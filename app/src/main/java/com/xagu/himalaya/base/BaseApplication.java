@@ -24,6 +24,6 @@ public class BaseApplication extends Application {
         }
 
         //初始化LogUtil
-        LogUtil.init(this.getPackageName(),true);
+        LogUtil.init(this.getPackageName(),false);
     }
 }
