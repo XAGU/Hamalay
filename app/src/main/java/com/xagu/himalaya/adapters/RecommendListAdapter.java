@@ -13,6 +13,7 @@ import com.bumptech.glide.Glide;
 import com.xagu.himalaya.R;
 import com.ximalaya.ting.android.opensdk.model.album.Album;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -78,8 +79,9 @@ public class RecommendListAdapter extends RecyclerView.Adapter<RecommendListAdap
 
             albumTitleTv.setText(album.getAlbumTitle());
             albumDescTv.setText(album.getAlbumIntro());
-            albumPlayCountTv.setText(album.getPlayCount()+"");
-            albumContentSizeTv.setText(album.getIncludeTrackCount()+"");
+            DecimalFormat df=new DecimalFormat("0.00");
+            albumPlayCountTv.setText(df.format(album.getPlayCount()/10000f)+"万");
+            albumContentSizeTv.setText(album.getIncludeTrackCount()+"集");
 
             Glide.with(itemView.getContext()).load(album.getCoverUrlLarge()).into(albumCoverIv);
         }
