@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.xagu.himalaya.R;
+import com.xagu.himalaya.utils.LogUtil;
 import com.ximalaya.ting.android.opensdk.model.album.Album;
 
 import java.text.DecimalFormat;
@@ -25,6 +26,8 @@ import java.util.List;
 public class RecommendListAdapter extends RecyclerView.Adapter<RecommendListAdapter.InnerHolder> {
 
     private List<Album> mData = new ArrayList<>();
+    private static final String TAG = "RecommendListAdapter";
+    private OnRecommendItemClickListener mItemClickListener;
 
     @NonNull
     @Override
@@ -38,6 +41,16 @@ public class RecommendListAdapter extends RecyclerView.Adapter<RecommendListAdap
     public void onBindViewHolder(@NonNull InnerHolder holder, int position) {
         //这里是封装数据
         holder.itemView.setTag(position);
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                LogUtil.d(TAG,"holder.itemView clicked" + (int)v.getTag());
+                int index = (int)v.getTag();
+                if (mItemClickListener != null) {
+                    mItemClickListener.onItemClick(index,mData.get(index));
+                }
+            }
+        });
         holder.setData(mData.get(position));
     }
 
@@ -85,5 +98,13 @@ public class RecommendListAdapter extends RecyclerView.Adapter<RecommendListAdap
 
             Glide.with(itemView.getContext()).load(album.getCoverUrlLarge()).into(albumCoverIv);
         }
+    }
+
+    public void setOnRecommendItemClickListener(OnRecommendItemClickListener listener){
+        this.mItemClickListener = listener;
+    }
+
+    public interface OnRecommendItemClickListener{
+        public void onItemClick(int position, Album album);
     }
 }

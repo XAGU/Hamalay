@@ -1,5 +1,6 @@
 package com.xagu.himalaya.fragments;
 
+import android.content.Intent;
 import android.graphics.Rect;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,10 +10,12 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.xagu.himalaya.DetailActivity;
 import com.xagu.himalaya.R;
 import com.xagu.himalaya.adapters.RecommendListAdapter;
 import com.xagu.himalaya.base.BaseFragment;
-import com.xagu.himalaya.interfaces.IRecommendViewCallBack;
+import com.xagu.himalaya.interfaces.IRecommendViewCallback;
+import com.xagu.himalaya.presenters.AlbumDetailPresenter;
 import com.xagu.himalaya.presenters.RecommendPresenter;
 import com.xagu.himalaya.utils.LogUtil;
 import com.xagu.himalaya.views.UILoader;
@@ -27,7 +30,7 @@ import java.util.List;
  * Email:xagu_qc@foxmail.com
  * Describe:
  */
-public class RecommendFragment extends BaseFragment implements IRecommendViewCallBack, UILoader.OnRetryClickListener {
+public class RecommendFragment extends BaseFragment implements IRecommendViewCallback, UILoader.OnRetryClickListener, RecommendListAdapter.OnRecommendItemClickListener {
     private static final String TAG = "RecommendFragment";
     private View mRootView;
     private RecyclerView mRecommendRv;
@@ -86,6 +89,7 @@ public class RecommendFragment extends BaseFragment implements IRecommendViewCal
         //3.设置适配器
         mRecommendListAdapter = new RecommendListAdapter();
         mRecommendRv.setAdapter(mRecommendListAdapter);
+        mRecommendListAdapter.setOnRecommendItemClickListener(this);
         return mRootView;
     }
 
@@ -133,5 +137,13 @@ public class RecommendFragment extends BaseFragment implements IRecommendViewCal
         if (mRecommendPresenter != null) {
             mRecommendPresenter.getRecommendList();
         }
+    }
+
+    @Override
+    public void onItemClick(int position, Album album) {
+        AlbumDetailPresenter.getInstance().setTargetAlbum(album);
+        //item被点击跳转到详情页面
+        Intent intent = new Intent(getContext(), DetailActivity.class);
+        startActivity(intent);
     }
 }

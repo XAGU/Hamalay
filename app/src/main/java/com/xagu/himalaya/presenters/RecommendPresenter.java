@@ -1,16 +1,13 @@
 package com.xagu.himalaya.presenters;
 
-import android.util.Log;
-
 import com.xagu.himalaya.interfaces.IRecommendPresenter;
-import com.xagu.himalaya.interfaces.IRecommendViewCallBack;
+import com.xagu.himalaya.interfaces.IRecommendViewCallback;
 import com.xagu.himalaya.utils.Constants;
 import com.xagu.himalaya.utils.LogUtil;
 import com.ximalaya.ting.android.opensdk.constants.DTransferConstants;
 import com.ximalaya.ting.android.opensdk.datatrasfer.CommonRequest;
 import com.ximalaya.ting.android.opensdk.datatrasfer.IDataCallBack;
 import com.ximalaya.ting.android.opensdk.model.album.Album;
-import com.ximalaya.ting.android.opensdk.model.album.AlbumList;
 import com.ximalaya.ting.android.opensdk.model.album.GussLikeAlbumList;
 
 import java.util.ArrayList;
@@ -27,7 +24,7 @@ public class RecommendPresenter implements IRecommendPresenter {
 
     private String TAG = "RecommendPresenter";
 
-    private List<IRecommendViewCallBack> mCallBacks = new ArrayList<>();
+    private List<IRecommendViewCallback> mCallBacks = new ArrayList<>();
 
     private RecommendPresenter() {
     }
@@ -84,7 +81,7 @@ public class RecommendPresenter implements IRecommendPresenter {
     private void handleError() {
         //通知UI更新
         if (mCallBacks != null) {
-            for (IRecommendViewCallBack callBack : mCallBacks) {
+            for (IRecommendViewCallback callBack : mCallBacks) {
                 callBack.onNetWorkError();
             }
         }
@@ -95,11 +92,11 @@ public class RecommendPresenter implements IRecommendPresenter {
         //通知UI更新
         if (albumList != null) {
             if (albumList.size() == 0) {
-                for (IRecommendViewCallBack callBack : mCallBacks) {
+                for (IRecommendViewCallback callBack : mCallBacks) {
                     callBack.onEmpty();
                 }
             } else {
-                for (IRecommendViewCallBack callBack : mCallBacks) {
+                for (IRecommendViewCallback callBack : mCallBacks) {
                     callBack.onReCommendListLoaded(albumList);
                 }
             }
@@ -107,20 +104,20 @@ public class RecommendPresenter implements IRecommendPresenter {
     }
 
     private void updateLoading(){
-        for (IRecommendViewCallBack callBack : mCallBacks) {
+        for (IRecommendViewCallback callBack : mCallBacks) {
             callBack.onLoading();
         }
     }
 
     @Override
-    public void registerViewCallback(IRecommendViewCallBack callBack) {
+    public void registerViewCallback(IRecommendViewCallback callBack) {
         if (mCallBacks != null && !mCallBacks.contains(callBack)) {
             mCallBacks.add(callBack);
         }
     }
 
     @Override
-    public void unRegisterViewCallback(IRecommendViewCallBack callBack) {
+    public void unRegisterViewCallback(IRecommendViewCallback callBack) {
         if (mCallBacks != null) {
             mCallBacks.remove(callBack);
         }

@@ -16,11 +16,11 @@ public interface IRecommendPresenter {
      * 这个方法用于注册ui的回调
      * @param callBack
      */
-    void registerViewCallback(IRecommendViewCallBack callBack);
+    void registerViewCallback(IRecommendViewCallback callBack);
 
     /**
      * 取消UI的回调注册
      * @param callBack
      */
-    void unRegisterViewCallback(IRecommendViewCallBack callBack);
+    void unRegisterViewCallback(IRecommendViewCallback callBack);
 }

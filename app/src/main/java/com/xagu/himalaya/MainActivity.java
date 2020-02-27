@@ -10,13 +10,14 @@ import android.os.Bundle;
 
 import com.xagu.himalaya.adapters.IndicatorAdapter;
 import com.xagu.himalaya.adapters.MainContentAdapter;
+import com.xagu.himalaya.base.BaseActivity;
 import com.xagu.himalaya.utils.LogUtil;
 
 import net.lucode.hackware.magicindicator.MagicIndicator;
 import net.lucode.hackware.magicindicator.ViewPagerHelper;
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.CommonNavigator;
 
-public class MainActivity extends FragmentActivity {
+public class MainActivity extends BaseActivity {
 
     private static final String TAG = "MainActivity";
     private MagicIndicator mMagicIndicator;
@@ -54,6 +55,7 @@ public class MainActivity extends FragmentActivity {
 
         //ViewPager
         mContentPager = findViewById(R.id.content_pager);
+        mContentPager.setOffscreenPageLimit(2);
         //创建内容适配器
         FragmentManager supportFragmentManager = getSupportFragmentManager();
         MainContentAdapter mainContentAdapter = new MainContentAdapter(supportFragmentManager, FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);

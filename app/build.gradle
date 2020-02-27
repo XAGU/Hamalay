@@ -37,4 +37,6 @@ dependencies {
     implementation 'com.github.hackware1993:MagicIndicator:1.5.0'
     implementation 'androidx.recyclerview:recyclerview:1.2.0-alpha01'
     implementation 'com.github.bumptech.glide:glide:4.11.0'
+    //高斯模糊
+    implementation 'jp.wasabeef:glide-transformations:4.1.0'
 }

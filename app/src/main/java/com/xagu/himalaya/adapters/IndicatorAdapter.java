@@ -38,7 +38,7 @@ public class IndicatorAdapter extends CommonNavigatorAdapter {
     @Override
     public IPagerTitleView getTitleView(Context context, final int index) {
         //创建View
-        SimplePagerTitleView simplePagerTitleView = new ColorTransitionPagerTitleView(context);
+        ColorTransitionPagerTitleView  simplePagerTitleView = new ColorTransitionPagerTitleView(context);
         //设置颜色位灰色
         simplePagerTitleView.setNormalColor(Color.parseColor("#aaffffff"));
         //选中情况下为黑色
