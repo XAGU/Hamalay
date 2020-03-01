@@ -1,11 +1,13 @@
 package com.xagu.himalaya.interfaces;
 
+import com.xagu.himalaya.base.IBasePresenter;
+
 /**
  * Created by XAGU on 2020/2/27
  * Email:xagu_qc@foxmail.com
  * Describe:
  */
-public interface IAlbumDetailPresenter {
+public interface IAlbumDetailPresenter extends IBasePresenter<IAlbumDetailViewCallback> {
     /**
      * 获取专辑详情
      */
@@ -20,16 +22,4 @@ public interface IAlbumDetailPresenter {
      * 上拉加载更多
      */
     void loadMore();
-
-    /**
-     * 这个方法用于注册ui的回调
-     * @param callBack
-     */
-    void registerViewCallback(IAlbumDetailViewCallback callBack);
-
-    /**
-     * 取消UI的回调注册
-     * @param callBack
-     */
-    void unRegisterViewCallback(IAlbumDetailViewCallback callBack);
 }

@@ -26,25 +26,25 @@ public class LogUtil {
 
     public static void d(String TAG, String context){
         if (!sIsRelease){
-            Log.d("[" + sTAG + "]" + TAG, context);
+            Log.d("LogUtil[" + sTAG + "]" + TAG, context);
         }
     }
 
     public static void v(String TAG, String context){
         if (!sIsRelease){
-            Log.v("[" + sTAG + "]" + TAG, context);
+            Log.v("LogUtil[" + sTAG + "]" + TAG, context);
         }
     }
 
     public static void i(String TAG, String context){
         if (!sIsRelease){
-            Log.i("[" + sTAG + "]" + TAG, context);
+            Log.i("LogUtil[" + sTAG + "]" + TAG, context);
         }
     }
 
     public static void e(String TAG, String context){
         if (!sIsRelease){
-            Log.e("[" + sTAG + "]" + TAG, context);
+            Log.e("LogUtil[" + sTAG + "]" + TAG, context);
         }
     }
 }

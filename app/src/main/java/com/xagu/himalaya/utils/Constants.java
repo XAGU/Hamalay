@@ -8,5 +8,8 @@ package com.xagu.himalaya.utils;
 public class Constants {
 
     //获取推荐列表的专辑数量
-    public final static int RECOMMEND_COUNT = 50;
+    public final static int COUNT_RECOMMEND = 50;
+
+    //默认列表的请求数量
+    public final static int COUNT_DEFAULT = 50;
 }
