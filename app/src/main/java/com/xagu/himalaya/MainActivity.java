@@ -1,7 +1,5 @@
 package com.xagu.himalaya;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
@@ -11,13 +9,11 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.xagu.himalaya.adapters.IndicatorAdapter;
 import com.xagu.himalaya.adapters.MainContentAdapter;
 import com.xagu.himalaya.base.BaseActivity;
-import com.xagu.himalaya.data.HimalayaDBHelper;
 import com.xagu.himalaya.interfaces.IPlayerCallback;
 import com.xagu.himalaya.presenters.PlayerPresenter;
 import com.xagu.himalaya.presenters.RecommendPresenter;
@@ -69,7 +65,7 @@ public class MainActivity extends BaseActivity implements IPlayerCallback {
             public void onTabClick(int index) {
                 LogUtil.d(TAG,"click index is -->" + index);
                 if (mContentPager != null) {
-                    mContentPager.setCurrentItem(index);
+                    mContentPager.setCurrentItem(index,false);
                 }
             }
         });
@@ -246,7 +242,7 @@ public class MainActivity extends BaseActivity implements IPlayerCallback {
             if (nickname != null) {
                 mMainTrackAuthor.setText(nickname);
             }
-            String coverUrlMiddle = track.getCoverUrlMiddle();
+            String coverUrlMiddle = track.getCoverUrlLarge();
             if (coverUrlMiddle != null) {
                 Glide.with(this).load(coverUrlMiddle).into(mMainTrackCover);
             }

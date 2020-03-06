@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -16,29 +17,30 @@ import com.xagu.himalaya.R;
  * Email:xagu_qc@foxmail.com
  * Describe: TODO
  */
-public class ConfirmDialog extends Dialog {
+public class ConfirmCheckBoxDialog extends Dialog {
 
     private TextView mBtnConfirm;
     private TextView mBtnCancel;
     private OnBtnClickListener btnClicklistener = null;
     private TextView mDialogTitle;
+    private CheckBox mDialogCheckBox;
 
-    public ConfirmDialog(@NonNull Context context) {
+    public ConfirmCheckBoxDialog(@NonNull Context context) {
         this(context,0);
     }
 
-    public ConfirmDialog(@NonNull Context context, int themeResId) {
+    public ConfirmCheckBoxDialog(@NonNull Context context, int themeResId) {
         this(context, true,null);
     }
 
-    protected ConfirmDialog(@NonNull Context context, boolean cancelable, @Nullable OnCancelListener cancelListener) {
+    protected ConfirmCheckBoxDialog(@NonNull Context context, boolean cancelable, @Nullable OnCancelListener cancelListener) {
         super(context, cancelable, cancelListener);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.dialog_confirm);
+        setContentView(R.layout.dialog_check_box_confirm);
         initView();
         initEvent();
     }
@@ -47,8 +49,9 @@ public class ConfirmDialog extends Dialog {
         mBtnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                boolean isChecked = mDialogCheckBox.isChecked();
                 if (btnClicklistener != null) {
-                    btnClicklistener.onCancelClick();
+                    btnClicklistener.onCancelClick(isChecked);
                 }
                 dismiss();
             }
@@ -56,8 +59,9 @@ public class ConfirmDialog extends Dialog {
         mBtnConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                boolean isChecked = mDialogCheckBox.isChecked();
                 if (btnClicklistener != null) {
-                    btnClicklistener.onConfirmClick();
+                    btnClicklistener.onConfirmClick(isChecked);
                 }
                 dismiss();
             }
@@ -67,6 +71,7 @@ public class ConfirmDialog extends Dialog {
     private void initView() {
         mBtnConfirm = findViewById(R.id.btn_confirm);
         mBtnCancel = findViewById(R.id.btn_cancel);
+        mDialogCheckBox = findViewById(R.id.dialog_checkbox);
     }
 
     public void setOnBtnClickListener(OnBtnClickListener listener){
@@ -74,7 +79,7 @@ public class ConfirmDialog extends Dialog {
     }
 
     public interface OnBtnClickListener{
-        void onConfirmClick();
-        void onCancelClick();
+        void onConfirmClick(boolean isChecked);
+        void onCancelClick(boolean isChecked);
     }
 }

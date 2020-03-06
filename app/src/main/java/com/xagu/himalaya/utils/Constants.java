@@ -21,7 +21,7 @@ public class Constants {
     public final static String DB_NAME = "himalaya.db";
     //数据的版本
     public final static int DB_VERSION = 1;
-    //表名
+    //订阅表相关
     public final static String SUB_TB_NAME = "subTb";
     public final static String SUB_ID = "_id";
     public final static String SUB_COVER_URL = "coverUrl";
@@ -31,4 +31,19 @@ public class Constants {
     public final static String SUB_TRACKS_COUNT = "tracksCount";
     public final static String SUB_AUTHOR_NAME = "authorName";
     public final static String SUB_ALBUM_ID = "albumId";
+
+    //历史表相关
+    public final static String HIS_TB_NAME = "hisTb";
+    public final static String HIS_ID = "_id";
+    public final static String HIS_TRACK_ID = "trackId";
+    public final static String HIS_TITLE = "title";
+    public final static String HIS_PLAY_COUNT = "playCount";
+    public final static String HIS_DURATION = "duration";
+    public final static String HIS_UPDATE_TIME = "updateTime";
+    public final static String HIS_COVER = "cover";
+    public final static String HIS_AUTHOR = "author";
+
+    //历史记录最大条数
+    public final static int MAX_HISTORY_COUNT = 100;
+
 }

@@ -8,7 +8,6 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -56,7 +55,7 @@ public class DetailActivity extends BaseActivity implements IAlbumDetailViewCall
     private RoundRectImageView mSmallCover;
     private TextView mAlbumTitle;
     private TextView mAlbumAuthor;
-    private RecyclerView mAlbumDetailList;
+    private RecyclerView mAlbumDatalList;
     private FrameLayout mDetailListContainer;
     private IAlbumDetailPresenter mAlbumDetailPresenter;
     private int mCurrentPage = 1;
@@ -185,17 +184,17 @@ public class DetailActivity extends BaseActivity implements IAlbumDetailViewCall
 
     private View createSuccessView(ViewGroup container) {
         View detailListView = LayoutInflater.from(this).inflate(R.layout.item_detail_list, container, false);
-        mAlbumDetailList = detailListView.findViewById(R.id.album_detail_list);
+        mAlbumDatalList = detailListView.findViewById(R.id.album_detail_list);
         mRefreshLayout = detailListView.findViewById(R.id.refresh_layout);
         //RecycleView的使用步骤
         //1、设置布局管理器
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-        mAlbumDetailList.setLayoutManager(linearLayoutManager);
+        mAlbumDatalList.setLayoutManager(linearLayoutManager);
         //2、设置适配器
         mAlbumDetailListAdapter = new AlbumDetailListAdapter();
-        mAlbumDetailList.setAdapter(mAlbumDetailListAdapter);
+        mAlbumDatalList.setAdapter(mAlbumDetailListAdapter);
         //设置item的上下间距
-        mAlbumDetailList.addItemDecoration(new RecyclerView.ItemDecoration() {
+        mAlbumDatalList.addItemDecoration(new RecyclerView.ItemDecoration() {
             @Override
             public void getItemOffsets(@NonNull Rect outRect, @NonNull View view, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
                 outRect.top = UIUtil.dip2px(view.getContext(), 2);
@@ -341,6 +340,11 @@ public class DetailActivity extends BaseActivity implements IAlbumDetailViewCall
         //跳转到播放器界面
         Intent intent = new Intent(DetailActivity.this, PlayerActivity.class);
         startActivity(intent);
+    }
+
+    @Override
+    public void onItemLongClickListener(List<Track> detailList, int position) {
+
     }
 
     @Override

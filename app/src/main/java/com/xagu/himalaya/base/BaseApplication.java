@@ -36,7 +36,7 @@ public class BaseApplication extends Application {
         XmPlayerManager.getInstance(this).init();
 
         //初始化LogUtil
-        LogUtil.init(this.getPackageName(),false);
+        LogUtil.init(this.getPackageName(),true);
 
         sHandler = new Handler();
 

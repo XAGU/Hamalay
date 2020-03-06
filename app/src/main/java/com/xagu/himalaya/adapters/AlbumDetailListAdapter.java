@@ -78,6 +78,16 @@ public class AlbumDetailListAdapter extends RecyclerView.Adapter<AlbumDetailList
                 }
             }
         });
+        itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                if (mItemClickListener != null) {
+                    //参数需要列表和位置
+                    mItemClickListener.onItemLongClickListener(mDetailList,position);
+                }
+                return true;
+            }
+        });
     }
 
     @Override
@@ -106,5 +116,6 @@ public class AlbumDetailListAdapter extends RecyclerView.Adapter<AlbumDetailList
 
     public interface ItemClickListener {
         void onItemClickListener(List<Track> detailList, int position);
+        void onItemLongClickListener(List<Track> detailList, int position);
     }
 }

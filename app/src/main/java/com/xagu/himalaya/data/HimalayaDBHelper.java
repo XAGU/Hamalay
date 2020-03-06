@@ -38,6 +38,18 @@ public class HimalayaDBHelper extends SQLiteOpenHelper {
                 Constants.SUB_ALBUM_ID + " integer" +
                 ")";
         db.execSQL(subTbSql);
+        //创建历史记录表
+        String historySql = "CREATE TABLE " + Constants.HIS_TB_NAME + "(" +
+                Constants.HIS_ID + " integer primary key autoincrement," +
+                Constants.HIS_TRACK_ID + " integer," +
+                Constants.HIS_TITLE + " varchar," +
+                Constants.HIS_PLAY_COUNT + " integer," +
+                Constants.HIS_DURATION + " integer," +
+                Constants.HIS_UPDATE_TIME + " integer," +
+                Constants.HIS_COVER + " varchar," +
+                Constants.HIS_AUTHOR + " varchar" +
+                ")";
+        db.execSQL(historySql);
     }
 
     @Override
