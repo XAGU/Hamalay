@@ -10,9 +10,10 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout;
 import com.xagu.himalaya.DetailActivity;
 import com.xagu.himalaya.R;
-import com.xagu.himalaya.adapters.RecommendListAdapter;
+import com.xagu.himalaya.adapters.AlbumListAdapter;
 import com.xagu.himalaya.base.BaseFragment;
 import com.xagu.himalaya.interfaces.IRecommendViewCallback;
 import com.xagu.himalaya.presenters.AlbumDetailPresenter;
@@ -30,13 +31,14 @@ import java.util.List;
  * Email:xagu_qc@foxmail.com
  * Describe:
  */
-public class RecommendFragment extends BaseFragment implements IRecommendViewCallback, UILoader.OnRetryClickListener, RecommendListAdapter.OnRecommendItemClickListener {
+public class RecommendFragment extends BaseFragment implements IRecommendViewCallback, UILoader.OnRetryClickListener, AlbumListAdapter.OnAlbumItemClickListener {
     private static final String TAG = "RecommendFragment";
     private View mRootView;
     private RecyclerView mRecommendRv;
-    private RecommendListAdapter mRecommendListAdapter;
+    private AlbumListAdapter mRecommendListAdapter;
     private RecommendPresenter mRecommendPresenter;
     private UILoader mUiLoader;
+    private TwinklingRefreshLayout mOverScrollView;
 
     @Override
     protected View onSubViewLoaded(final LayoutInflater layoutInflater, ViewGroup container) {
@@ -72,6 +74,8 @@ public class RecommendFragment extends BaseFragment implements IRecommendViewCal
         //RecycleView的使用
         //1.找到控件
         mRecommendRv = mRootView.findViewById(R.id.recommend_list);
+        mOverScrollView = mRootView.findViewById(R.id.over_scroll);
+        mOverScrollView.setPureScrollModeOn();
         //2.设置布局管理器
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -87,9 +91,9 @@ public class RecommendFragment extends BaseFragment implements IRecommendViewCal
             }
         });
         //3.设置适配器
-        mRecommendListAdapter = new RecommendListAdapter();
+        mRecommendListAdapter = new AlbumListAdapter();
         mRecommendRv.setAdapter(mRecommendListAdapter);
-        mRecommendListAdapter.setOnRecommendItemClickListener(this);
+        mRecommendListAdapter.setOnAlbumItemClickListener(this);
         return mRootView;
     }
 

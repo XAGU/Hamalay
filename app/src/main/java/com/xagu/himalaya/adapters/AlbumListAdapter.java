@@ -1,5 +1,6 @@
 package com.xagu.himalaya.adapters;
 
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,11 +24,12 @@ import java.util.List;
  * Email:xagu_qc@foxmail.com
  * Describe:
  */
-public class RecommendListAdapter extends RecyclerView.Adapter<RecommendListAdapter.InnerHolder> {
+public class AlbumListAdapter extends RecyclerView.Adapter<AlbumListAdapter.InnerHolder> {
 
     private List<Album> mData = new ArrayList<>();
     private static final String TAG = "RecommendListAdapter";
-    private OnRecommendItemClickListener mItemClickListener;
+    private OnAlbumItemClickListener mItemClickListener = null;
+    private OnAlbumItemLongClickListener mItemLongClickListener = null;
 
     @NonNull
     @Override
@@ -51,6 +53,16 @@ public class RecommendListAdapter extends RecyclerView.Adapter<RecommendListAdap
                 }
             }
         });
+        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                int index = (int)v.getTag();
+                if (mItemLongClickListener != null) {
+                    mItemLongClickListener.onItemLongClick(index,mData.get(index));
+                }
+                return true;
+            }
+        });
         holder.setData(mData.get(position));
     }
 
@@ -71,6 +83,7 @@ public class RecommendListAdapter extends RecyclerView.Adapter<RecommendListAdap
         //更新UI
         notifyDataSetChanged();
     }
+
 
     public class InnerHolder extends RecyclerView.ViewHolder {
         public InnerHolder(@NonNull View itemView) {
@@ -95,16 +108,28 @@ public class RecommendListAdapter extends RecyclerView.Adapter<RecommendListAdap
             DecimalFormat df=new DecimalFormat("0.00");
             albumPlayCountTv.setText(df.format(album.getPlayCount()/10000f)+"万");
             albumContentSizeTv.setText(album.getIncludeTrackCount()+"集");
-
-            Glide.with(itemView.getContext()).load(album.getCoverUrlLarge()).into(albumCoverIv);
+            String coverUrlLarge = album.getCoverUrlLarge();
+            if (!TextUtils.isEmpty(coverUrlLarge)) {
+                Glide.with(itemView.getContext()).load(coverUrlLarge).into(albumCoverIv);
+            } else {
+                albumCoverIv.setImageResource(R.mipmap.logo);
+            }
         }
     }
 
-    public void setOnRecommendItemClickListener(OnRecommendItemClickListener listener){
+    public void setOnAlbumItemClickListener(OnAlbumItemClickListener listener){
         this.mItemClickListener = listener;
     }
 
-    public interface OnRecommendItemClickListener{
+    public interface OnAlbumItemClickListener {
         public void onItemClick(int position, Album album);
+    }
+
+    public void setOnAlbumItemLongClickListener(OnAlbumItemLongClickListener listener){
+        this.mItemLongClickListener = listener;
+    }
+
+    public interface OnAlbumItemLongClickListener {
+        public void onItemLongClick(int position, Album album);
     }
 }

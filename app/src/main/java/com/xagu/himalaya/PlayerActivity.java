@@ -1,6 +1,7 @@
 package com.xagu.himalaya;
 
 
+import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -9,6 +10,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.SeekBar;
@@ -64,24 +66,50 @@ public class PlayerActivity extends BaseActivity implements IPlayerCallback, Vie
         //3、PLAY_MODEL_RANDOM
         //4、PLAY_MODEL_SINGLE_LOOP
         sPlayModeRule.put(PLAY_MODEL_LIST, PLAY_MODEL_LIST_LOOP);
-        sPlayModeRule.put(PLAY_MODEL_LIST_LOOP,PLAY_MODEL_RANDOM);
-        sPlayModeRule.put(PLAY_MODEL_RANDOM,PLAY_MODEL_SINGLE_LOOP);
-        sPlayModeRule.put(PLAY_MODEL_SINGLE_LOOP,PLAY_MODEL_LIST);
+        sPlayModeRule.put(PLAY_MODEL_LIST_LOOP, PLAY_MODEL_RANDOM);
+        sPlayModeRule.put(PLAY_MODEL_RANDOM, PLAY_MODEL_SINGLE_LOOP);
+        sPlayModeRule.put(PLAY_MODEL_SINGLE_LOOP, PLAY_MODEL_LIST);
     }
 
     private ImageView mPlayListBtn;
     private SobPopWindow mSobPopWindow;
+    private ValueAnimator mEnterBgAnimation;
+    private ValueAnimator mExitBgAnimation;
+    public final int BG_ANIMATION_DURATION = 800;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_player);
-        initView();
         mPlayerPresenter = PlayerPresenter.getInstance();
+        initView();
         mPlayerPresenter.registerViewCallback(this);
-        //界面初始化以后再初始化数据
-        mPlayerPresenter.getPlayList();
+        //mPlayerPresenter.play();
         initEvent();
+        initBgAnimation();
+    }
+
+    private void initBgAnimation() {
+        //进入的
+        mEnterBgAnimation = ValueAnimator.ofFloat(1.0f, 0.7f);
+        mEnterBgAnimation.setDuration(BG_ANIMATION_DURATION);
+        mEnterBgAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                //处理下背景，有点透明度
+                updateBgAlpha((Float) animation.getAnimatedValue());
+            }
+        });
+        //退出的
+        mExitBgAnimation = ValueAnimator.ofFloat(0.7f, 1.0f);
+        mExitBgAnimation.setDuration(BG_ANIMATION_DURATION);
+        mExitBgAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                //处理下背景，有点透明度
+                updateBgAlpha((Float) animation.getAnimatedValue());
+            }
+        });
     }
 
     @Override
@@ -112,7 +140,7 @@ public class PlayerActivity extends BaseActivity implements IPlayerCallback, Vie
             @Override
             public void onClick(View v) {
                 //改变播放状态     暂停----》播放  播放----》暂停
-                if (mPlayerPresenter.isPlay()) {
+                if (mPlayerPresenter.isPlaying()) {
                     mPlayerPresenter.pause();
                 } else {
                     mPlayerPresenter.play();
@@ -179,10 +207,7 @@ public class PlayerActivity extends BaseActivity implements IPlayerCallback, Vie
                 //2、PLAY_MODE_LIST_LOOP
                 //3、PLAY_MODE_RANDOM
                 //4、PLAY_MODE_SINGLE_LOOP
-                XmPlayListControl.PlayMode playMode = sPlayModeRule.get(mCurrentMode);
-                if (mPlayerPresenter != null) {
-                    mPlayerPresenter.switchPlayMode(playMode);
-                }
+                switchPlayMode();
             }
         });
 
@@ -190,22 +215,52 @@ public class PlayerActivity extends BaseActivity implements IPlayerCallback, Vie
             @Override
             public void onClick(View v) {
                 //展示播放列表
-                mSobPopWindow.showAtLocation(v, Gravity.BOTTOM,0,0);
-                //处理下背景，有点透明度
-                updateBgAlpha(0.8f);
+                mSobPopWindow.showAtLocation(v, Gravity.BOTTOM, 0, 0);
+                //修改背景的透明有一个渐变的过程
+                mEnterBgAnimation.start();
             }
         });
 
         mSobPopWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
             @Override
             public void onDismiss() {
-                //POp消失以后恢复
-                updateBgAlpha(1.0f);
+                mExitBgAnimation.start();
+            }
+        });
+
+        mSobPopWindow.setOnListItemClickListener(new SobPopWindow.OnListItemClickListener() {
+            @Override
+            public void onListItemClick(int position) {
+                if (mPlayerPresenter != null) {
+                    mPlayerPresenter.playByIndex(position);
+                }
+            }
+        });
+
+        mSobPopWindow.setOnPlayListActionClickListener(new SobPopWindow.OnPlayListActionClickListener() {
+            @Override
+            public void OnPlayModeClick() {
+                switchPlayMode();
+            }
+
+            @Override
+            public void OnOrderClick() {
+                //点击了切换顺序和逆序
+                if (mPlayerPresenter != null) {
+                    mPlayerPresenter.reversePlayList();
+                }
             }
         });
     }
 
-    public void updateBgAlpha(float alpha){
+    private void switchPlayMode() {
+        XmPlayListControl.PlayMode playMode = sPlayModeRule.get(mCurrentMode);
+        if (mPlayerPresenter != null) {
+            mPlayerPresenter.switchPlayMode(playMode);
+        }
+    }
+
+    public void updateBgAlpha(float alpha) {
         Window window = getWindow();
         WindowManager.LayoutParams attributes = window.getAttributes();
         attributes.alpha = alpha;
@@ -214,7 +269,7 @@ public class PlayerActivity extends BaseActivity implements IPlayerCallback, Vie
 
     private void updatePlayModeBtnImage(XmPlayListControl.PlayMode mode) {
         //根据当前状态更改模式图标
-        switch (mode){
+        switch (mode) {
             case PLAY_MODEL_LIST:
                 mPlayModeSwitch.setImageDrawable(getDrawable(R.drawable.selector_player_mode_list_order));
                 break;
@@ -236,6 +291,9 @@ public class PlayerActivity extends BaseActivity implements IPlayerCallback, Vie
     private void initView() {
         mTrackTitle = findViewById(R.id.track_title);
         mControlBtn = findViewById(R.id.play_or_pause_btn);
+        if (mControlBtn != null) {
+            mControlBtn.setImageResource(mPlayerPresenter.isPlaying()?R.drawable.selector_player_stop:R.drawable.selector_player_play);
+        }
         mTotalDuration = findViewById(R.id.track_duration);
         //切换播放模式的按钮
         mPlayModeSwitch = findViewById(R.id.player_mode_switch);
@@ -304,12 +362,18 @@ public class PlayerActivity extends BaseActivity implements IPlayerCallback, Vie
         if (mTrackPagerAdapter != null) {
             mTrackPagerAdapter.setData(tracks);
         }
+        //数据回来后，把数据给播放列表
+        if (mSobPopWindow != null) {
+            mSobPopWindow.setListData(tracks);
+        }
     }
 
     @Override
     public void onPlayModeChange(XmPlayListControl.PlayMode mode) {
-        updatePlayModeBtnImage(mode);
         mCurrentMode = mode;
+        updatePlayModeBtnImage(mode);
+        //更新popWindow里的播放模式
+        mSobPopWindow.updatePlayMode(mode);
     }
 
     @Override
@@ -354,6 +418,9 @@ public class PlayerActivity extends BaseActivity implements IPlayerCallback, Vie
 
     @Override
     public void onTrackUpdate(Track track, int playIndex) {
+        if (track == null) {
+            return;
+        }
         this.mTrackTitleStr = track.getTrackTitle();
         if (mTrackTitle != null) {
             mTrackTitle.setText(mTrackTitleStr);
@@ -363,6 +430,15 @@ public class PlayerActivity extends BaseActivity implements IPlayerCallback, Vie
         if (mTrackPagerView != null) {
             mTrackPagerView.setCurrentItem(playIndex, true);
         }
+        //设置播放列表的当前的播放位置
+        if (mSobPopWindow != null) {
+            mSobPopWindow.setCurrentPlayPosition(playIndex);
+        }
+    }
+
+    @Override
+    public void updateListOrder(boolean isReverse) {
+        mSobPopWindow.updateOrderIcon(isReverse);
     }
 
     @Override
